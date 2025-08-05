@@ -28,7 +28,6 @@ Export **all revisions** of a Google Docs file to your Google Drive folder, savi
 
 ```
 const docId = 'YOUR_DOC_ID_HERE';     // Google Docs file ID
-const folderId = 'YOUR_FOLDER_ID_HERE'; // Drive folder ID to save versions
 const delayMs = 7000; // Delay between requests (ms), increase if you get rate limit errors
 ```
 Save the project (File → Save).
