@@ -1,8 +1,8 @@
 // Google Apps Script to import topics, materials, coursework, announcements, and submissions into Google Classroom
 // including attachments (files, links, videos, Google Docs converted to .docx, etc.) from a structured Drive folder
 
-const IMPORT_FOLDER_ID = '1WeIs5tSR3Hx4u987Y96Fhf9bRem79Zb4'; // Drive folder containing exported data
-const COURSE_ID = '791354743660'; // Target Google Classroom course ID
+const IMPORT_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID'; // Drive folder containing exported data
+const COURSE_ID = 'YOUR_COURSE_ID'; // Target Google Classroom course ID
 
 function importClassroomData() {
   const root = DriveApp.getFolderById(IMPORT_FOLDER_ID);
