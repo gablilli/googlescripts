@@ -8,9 +8,9 @@ function listClassroomCourseIds() {
   const courses = response.courses;
 
   if (!courses || courses.length === 0) {
-    Logger.log('Nessun corso trovato.');
+    Logger.log('No courses found.');
   } else {
-    Logger.log('Corsi trovati:');
+    Logger.log('Courses found:');
     courses.forEach(course => {
       Logger.log(`📘 ${course.name} → ID: ${course.id}`);
     });
