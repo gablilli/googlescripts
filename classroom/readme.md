@@ -29,28 +29,30 @@ In Apps Script: Resources > Cloud Platform Project > View API Console, then enab
 ## 📂 Folder Structure Example
 The Drive folder (by ID) should look like this:
 
+```
 MainImportFolder/
-├── topics.json
-├── materials.json
-├── materials_files/
-│   ├── file1.pdf
-│   └── doc1.docx
-├── coursework.json
-├── coursework_files/
-│   ├── assignment1.docx
-├── announcements.json
-├── submissions.json
-├── submissions_files/
-│   ├── submission1.pdf
+|-- topics.json
+|-- materials.json
+|--  materials_files/
+|   |-- file1.pdf
+|   |__ doc1.docx
+|-- coursework.json
+|-- coursework_files/
+│   |-- assignment1.docx
+|-- announcements.json
+|-- submissions.json
+|-- submissions_files/
+│   |-- submission1.pdf
+```
 
 ## ⚙️ Configuration
 At the top of the script, replace the placeholders with your own:
-
+```
 const IMPORT_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID';
 const COURSE_ID = 'YOUR_GOOGLE_CLASSROOM_COURSE_ID';
 IMPORT_FOLDER_ID – the Drive folder containing the exported files
-
-COURSE_ID – the target Google Classroom course ID (you can get it from the course URL)
+```
+COURSE_ID – the target Google Classroom course ID (you can get it with this [script](https://github.com/gablilli/googlescripts/blob/main/classroom/courses-ids.gs))
 
 ## ▶️ How to Run
 1. Open Google Apps Script.
@@ -70,14 +72,14 @@ COURSE_ID – the target Google Classroom course ID (you can get it from the cou
 ## 📄 Data File Format (Example JSON)
 
 ### topics.json
-
+```
 [
   { "id": "t1", "name": "Introduction" },
   { "id": "t2", "name": "Week 1" }
 ]
-
+```
 ### materials.json
-
+```
 [
   {
     "title": "Syllabus",
@@ -89,9 +91,9 @@ COURSE_ID – the target Google Classroom course ID (you can get it from the cou
     ]
   }
 ]
-
+```
 ### coursework.json
-
+```
 [
   {
     "id": "cw1",
@@ -104,9 +106,9 @@ COURSE_ID – the target Google Classroom course ID (you can get it from the cou
     ]
   }
 ]
-
+```
 ### announcements.json
-
+```
 [
   {
     "text": "Welcome to the course!",
@@ -117,9 +119,9 @@ COURSE_ID – the target Google Classroom course ID (you can get it from the cou
     ]
   }
 ]
-
+```
 ### submissions.json
-
+```
 {
   "submissions": [
     {
@@ -135,14 +137,15 @@ COURSE_ID – the target Google Classroom course ID (you can get it from the cou
     }
   ]
 }
-## 🔒 Permissions
+```
+## 🔒 Permissions
 When you run the script for the first time, you’ll need to grant authorization to:
 
 Read and manage your Google Classroom data.
 
 Access Google Drive files and folders.
 
-## 📌 Notes
+## 📌 Notes
 Files referenced must be located inside the appropriate subfolders (*_files).
 
 The script handles invalid or missing files gracefully, logging warnings.
