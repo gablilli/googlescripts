@@ -50,9 +50,10 @@ At the top of the script, replace the placeholders with your own:
 ```
 const IMPORT_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID';
 const COURSE_ID = 'YOUR_GOOGLE_CLASSROOM_COURSE_ID';
-IMPORT_FOLDER_ID – the Drive folder containing the exported files
 ```
-COURSE_ID – the target Google Classroom course ID (you can get it with this [script](https://github.com/gablilli/googlescripts/blob/main/classroom/courses-ids.gs))
+where:
+- IMPORT_FOLDER_ID is the Drive folder containing the exported files (you can get the id in drive's url, e.g. https://drive.google.com/drive/u/0/folders/YOUR-LONG-TOKEN)
+- COURSE_ID – the target Google Classroom course ID (you can get it with this [script](https://github.com/gablilli/googlescripts/blob/main/classroom/courses-ids.gs))
 
 ## ▶️ How to Run
 1. Open Google Apps Script.
