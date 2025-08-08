@@ -28,7 +28,7 @@ function exportCustomPlaceholderSubmissions(courseId, folder) {
     const submissionsForThisWork = [];
 
     for (let j = 1; j <= 2; j++) {
-      const fakeSubmission = {
+      const fakeSubmission = {     // CHANGE submissions.json BEFORE THE IMPORT WITH YOUR DATA!
         userId: `user${j}@example.com`,
         userName: `User ${j}`,
         files: [
