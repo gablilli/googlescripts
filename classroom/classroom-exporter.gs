@@ -1,231 +1,196 @@
+const EXPORT_FOLDER_ID = 'FOLDERID';
+const COURSE_ID = 'COURSEID';
+
 function exportClassroomData() {
-  const exportFolder = DriveApp.getFolderById('<EXPORT_FOLDER_ID>');
-  const courseIds = ['<COURSE_ID_1>', '<COURSE_ID_2>']; // Replace with actual course IDs
+  const exportRoot = DriveApp.getFolderById(EXPORT_FOLDER_ID);
 
-  courseIds.forEach(courseId => {
-    try {
-      const course = Classroom.Courses.get(courseId);
-      const courseFolder = exportFolder.createFolder(`${course.name.replace(/\W+/g, '_')}_${courseId}`);
+  const usersMap = exportUsersMap(exportRoot);
+  exportTopics(exportRoot);
+  exportMaterials(exportRoot, usersMap);
+  exportCoursework(exportRoot, usersMap);
+  exportAnnouncements(exportRoot, usersMap);
+  exportSubmissions(exportRoot, usersMap);
 
-      exportTopics(courseId, courseFolder);
-      exportCourseWork(courseId, courseFolder);
-      exportCourseMaterials(courseId, courseFolder);
-      exportCustomPlaceholderSubmissions(courseId, courseFolder);
-      exportAnnouncements(courseId, courseFolder);
-    } catch (e) {
-      Logger.log(`Error exporting course ${courseId}: ${e.message}`);
-    }
-  });
-
-  Logger.log('Export completed');
+  Logger.log("✅ Esportazione completata.");
 }
 
-function exportCustomPlaceholderSubmissions(courseId, folder) {
-  const courseworkList = Classroom.Courses.CourseWork.list(courseId).courseWork || [];
-  const results = {};
+// ---------------- USERS MAP ----------------
+function exportUsersMap(folder) {
+  const students = Classroom.Courses.Students.list(COURSE_ID).students || [];
+  const teachers = Classroom.Courses.Teachers.list(COURSE_ID).teachers || [];
+  const usersMap = {};
 
-  courseworkList.forEach(work => {
-    const submissionsForThisWork = [];
+  students.forEach(s => usersMap[s.userId] = s.profile.name.fullName);
+  teachers.forEach(t => usersMap[t.userId] = t.profile.name.fullName);
 
-    for (let j = 1; j <= 2; j++) {
-      const fakeSubmission = {     // CHANGE submissions.json BEFORE THE IMPORT WITH YOUR DATA!
-        userId: `user${j}@example.com`,
-        userName: `User ${j}`,
-        files: [
-          {
-            type: "driveFile",
-            name: `Document_${work.title}_Submission_${j}.pdf`,
-            id: `file_${work.id}_${j}`,
-            url: `https://drive.google.com/file/d/file_${work.id}_${j}/view`
-          },
-          {
-            type: "link",
-            name: "Reference Link",
-            url: `https://example.com/link_${work.id}_${j}`
-          }
-        ],
-        privateComments: [
-          {
-            author: `User ${j}`,
-            date: new Date().toISOString(),
-            text: `Private comment for submission ${j} on assignment ${work.title}`
-          }
-        ]
-      };
-      submissionsForThisWork.push(fakeSubmission);
-    }
-
-    results[work.id] = {
-      courseWorkId: work.id,
-      title: work.title,
-      submissions: submissionsForThisWork
-    };
-  });
-
-  folder.createFile('submissions.json', JSON.stringify(results, null, 2), MimeType.PLAIN_TEXT);
+  folder.createFile('users.json', JSON.stringify(usersMap, null, 2), MimeType.PLAIN_TEXT);
+  return usersMap;
 }
 
-function exportTopics(courseId, folder) {
-  const topics = Classroom.Courses.Topics.list(courseId).topic || [];
+// ---------------- TOPICS ----------------
+function exportTopics(folder) {
+  const topics = Classroom.Courses.Topics.list(COURSE_ID).topic || [];
   folder.createFile('topics.json', JSON.stringify(topics, null, 2), MimeType.PLAIN_TEXT);
 }
 
-function exportCourseWork(courseId, folder) {
-  const coursework = Classroom.Courses.CourseWork.list(courseId).courseWork || [];
-  const results = [];
-  const filesFolder = folder.createFolder('coursework_files');
+// ---------------- MATERIALS ----------------
+function exportMaterials(folder, usersMap) {
+  const materialsFolder = folder.createFolder('materials_files');
+  const mats = Classroom.Courses.CourseWorkMaterials.list(COURSE_ID).courseWorkMaterial || [];
 
-  coursework.forEach(item => {
-    const entry = {
-      id: item.id,
-      title: item.title,
-      description: `Created: ${item.creationTime}\n\n${item.description || ''}`,
-      materials: [],
-      state: item.state,
-      workType: item.workType,
-      topicId: item.topicId,
-      creatorUserId: item.creatorUserId || null
-    };
+  const exported = mats.map(m => ({
+    title: m.title,
+    description: m.description,
+    authorUserId: m.creatorUserId,
+    author: usersMap[m.creatorUserId] || '[autore sconosciuto]',
+    topicId: m.topicId,
+    materials: exportAttachments(m.materials, materialsFolder)
+  }));
 
-    if (item.materials) {
-      item.materials.forEach(mat => {
-        try {
-          const saved = saveMaterialToDrive(mat, filesFolder);
-          if (saved) entry.materials.push(saved);
-        } catch (e) {
-          Logger.log(`Error saving material in "${item.title}": ${e.message}`);
-        }
-      });
-    }
-
-    results.push(entry);
-  });
-
-  folder.createFile('coursework.json', JSON.stringify(results, null, 2), MimeType.PLAIN_TEXT);
+  folder.createFile('materials.json', JSON.stringify(exported, null, 2), MimeType.PLAIN_TEXT);
 }
 
-function exportCourseMaterials(courseId, folder) {
-  const materials = Classroom.Courses.CourseWorkMaterials.list(courseId).courseWorkMaterial || [];
-  const results = [];
-  const filesFolder = folder.createFolder('materials_files');
+// ---------------- COURSEWORK ----------------
+function exportCoursework(folder, usersMap) {
+  const courseworkFolder = folder.createFolder('_files');
+  const works = Classroom.Courses.CourseWork.list(COURSE_ID).courseWork || [];
 
-  materials.forEach(item => {
-    const entry = {
-      id: item.id,
-      title: item.title,
-      description: `Created: ${item.creationTime}\n\n${item.description || ''}`,
-      materials: [],
-      state: item.state,
-      topicId: item.topicId,
-      creatorUserId: item.creatorUserId || null
-    };
+  const exported = works.map(cw => ({
+    id: cw.id,
+    title: cw.title,
+    description: cw.description,
+    creatorUserId: cw.creatorUserId,
+    creatorName: usersMap[cw.creatorUserId] || '[autore sconosciuto]',
+    topicId: cw.topicId,
+    workType: cw.workType,
+    assigneeMode: cw.assigneeMode,
+    individualStudentsOptions: cw.individualStudentsOptions,
+    dueDate: cw.dueDate || null,
+    dueTime: cw.dueTime || null,
+    maxPoints: cw.maxPoints || null,
+    materials: exportAttachments(cw.materials, courseworkFolder)
+  }));
 
-    if (item.materials) {
-      item.materials.forEach(mat => {
-        try {
-          const saved = saveMaterialToDrive(mat, filesFolder);
-          if (saved) entry.materials.push(saved);
-        } catch (e) {
-          Logger.log(`Error saving material in "${item.title}": ${e.message}`);
-        }
-      });
-    }
-
-    results.push(entry);
-  });
-
-  folder.createFile('materials.json', JSON.stringify(results, null, 2), MimeType.PLAIN_TEXT);
+  folder.createFile('coursework.json', JSON.stringify(exported, null, 2), MimeType.PLAIN_TEXT);
 }
 
-function exportAnnouncements(courseId, folder) {
-  let announcements = Classroom.Courses.Announcements.list(courseId).announcements || [];
-  announcements.sort((a, b) => new Date(b.creationTime) - new Date(a.creationTime));
+// ---------------- ANNOUNCEMENTS ----------------
+function exportAnnouncements(folder, usersMap) {
+  const announcementsFolder = folder.createFolder('announcements_files');
+  const anns = Classroom.Courses.Announcements.list(COURSE_ID).announcements || [];
 
-  const announcementsFolder = folder.createFolder("announcements_files");
-  const results = [];
+  const exported = anns.map(a => ({
+    id: a.id,
+    date: a.updateTime || a.creationTime,
+    text: a.text,
+    authorUserId: a.creatorUserId,
+    author: usersMap[a.creatorUserId] || '[autore sconosciuto]',
+    materials: exportAttachments(a.materials, announcementsFolder),
+    comments: exportAnnouncementComments(a.id)
+  }));
 
-  announcements.forEach(a => {
-    let authorName = '';
+  folder.createFile('announcements.json', JSON.stringify(exported, null, 2), MimeType.PLAIN_TEXT);
+}
+
+function exportAnnouncementComments(announcementId) {
+  try {
+    const comments = Classroom.Courses.Announcements.Comments.list(COURSE_ID, announcementId).comments || [];
+    return comments.map(c => ({
+      date: c.updateTime || c.creationTime,
+      author: c.creatorUserId || null,
+      text: c.text
+    }));
+  } catch (e) {
+    Logger.log(`⚠️ Impossibile esportare commenti per annuncio ${announcementId}: ${e.message}`);
+    return [];
+  }
+}
+
+// ---------------- SUBMISSIONS ----------------
+function exportSubmissions(folder, usersMap) {
+  const submissionsFolder = folder.createFolder('submissions_files');
+  const courseworkList = Classroom.Courses.CourseWork.list(COURSE_ID).courseWork || [];
+
+  const result = {};
+  courseworkList.forEach(cw => {
     try {
-      if (a.creatorUserId) {
-        const user = Classroom.UserProfiles.get(a.creatorUserId);
-        authorName = `${user.name.fullName}`;
+      const subs = Classroom.Courses.CourseWork.StudentSubmissions.list(COURSE_ID, cw.id).studentSubmissions || [];
+      result[cw.id] = {
+        courseWorkId: cw.id,
+        title: cw.title,
+        submissions: subs.map(sub => {
+          const entry = {
+            id: sub.id,
+            userId: sub.userId,
+            userName: usersMap[sub.userId] || '[studente sconosciuto]',
+            materials: [],
+            privateComments: exportPrivateComments(cw.id, sub.id, usersMap)
+          };
+
+          // tenta esportazione file allegati
+          try {
+            if (sub.assignmentSubmission && sub.assignmentSubmission.attachments) {
+              const subFolder = submissionsFolder.createFolder(sub.id);
+              entry.materials = exportAttachments(sub.assignmentSubmission.attachments, subFolder);
+            }
+          } catch (err) {
+            Logger.log(`⚠️ File submission ${sub.id} non accessibile: ${err.message}`);
+            entry.materials = []; // potrai riempire manualmente
+          }
+
+          return entry;
+        })
+      };
+    } catch (e) {
+      Logger.log(`⚠️ Impossibile esportare submissions per compito ${cw.id}: ${e.message}`);
+    }
+  });
+
+  folder.createFile('submissions.json', JSON.stringify(result, null, 2), MimeType.PLAIN_TEXT);
+}
+
+function exportPrivateComments(courseWorkId, submissionId, usersMap) {
+  try {
+    const comments = Classroom.Courses.CourseWork.StudentSubmissions.Comments.list(
+      COURSE_ID, courseWorkId, submissionId
+    ).comments || [];
+
+    return comments.map(c => ({
+      date: c.updateTime || c.creationTime,
+      author: usersMap[c.creatorUserId] || '[autore sconosciuto]',
+      text: c.text
+    }));
+  } catch (e) {
+    Logger.log(`⚠️ Commenti privati non accessibili per submission ${submissionId}`);
+    return [];
+  }
+}
+
+// ---------------- ATTACHMENTS EXPORT ----------------
+function exportAttachments(materials, targetFolder) {
+  if (!materials) return [];
+  return materials.map(mat => {
+    try {
+      if (mat.driveFile?.driveFile?.id) {
+        const file = DriveApp.getFileById(mat.driveFile.driveFile.id);
+        if (file.getMimeType().startsWith('application/vnd.google-apps')) {
+          const converted = file.getAs(MimeType.MICROSOFT_WORD);
+          const saved = targetFolder.createFile(converted).setName(file.getName() + ".docx");
+          return { name: saved.getName(), type: 'docx' };
+        } else {
+          const saved = file.makeCopy(file.getName(), targetFolder);
+          return { name: saved.getName(), type: file.getMimeType() };
+        }
+      } else if (mat.link?.url) {
+        return { type: 'link', url: mat.link.url, title: mat.link.title || '' };
+      } else if (mat.youtubeVideo?.id) {
+        return { type: 'youtube', url: `https://youtu.be/${mat.youtubeVideo.id}`, title: mat.youtubeVideo.title || '' };
+      } else if (mat.form?.formUrl) {
+        return { type: 'form', url: mat.form.formUrl, title: mat.form.title || '' };
       }
     } catch (e) {
-      Logger.log(`Unable to get author name for announcement ${a.id}: ${e.message}`);
+      Logger.log(`⚠️ Allegato non esportato: ${e.message}`);
     }
-
-    if (a.materials) {
-      a.materials.forEach((material, idx) => {
-        if (material.driveFile && material.driveFile.driveFile.id) {
-          try {
-            const originalFile = DriveApp.getFileById(material.driveFile.driveFile.id);
-            const copiedFile = originalFile.makeCopy(`${a.id}_attachment_${idx}`, announcementsFolder);
-            copiedFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-
-            material.driveFile.driveFile.id = copiedFile.getId();
-            material.driveFile.driveFile.title = copiedFile.getName();
-          } catch (e) {
-            Logger.log(`Error copying attachment for announcement ${a.id}: ${e.message}`);
-          }
-        }
-      });
-    }
-
-    results.push({
-      id: a.id,
-      text: `Author: ${authorName || '[unknown]'}\nCreated: ${new Date(a.creationTime).toLocaleString()}\n\n${a.text}`,
-      creationTime: a.creationTime,
-      updateTime: a.updateTime,
-      materials: a.materials || [],
-      assigneeMode: a.assigneeMode,
-      individualStudentsOptions: a.individualStudentsOptions || null,
-      creatorUserId: a.creatorUserId || null
-    });
-  });
-
-  folder.createFile('announcements.json', JSON.stringify(results, null, 2), MimeType.PLAIN_TEXT);
-}
-
-function saveMaterialToDrive(mat, folder) {
-  try {
-    if (mat.driveFile) {
-      const fileId = mat.driveFile.driveFile.id;
-      const file = DriveApp.getFileById(fileId);
-      const mimeType = file.getMimeType();
-
-      if (mimeType === MimeType.GOOGLE_DOCS) {
-        const url = `https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document`;
-        const token = ScriptApp.getOAuthToken();
-        const response = UrlFetchApp.fetch(url, {
-          headers: { Authorization: 'Bearer ' + token },
-          muteHttpExceptions: true
-        });
-
-        if (response.getResponseCode() === 200) {
-          const blob = response.getBlob().setName(`${file.getName()}.docx`);
-          const savedFile = folder.createFile(blob);
-          return { 
-            name: savedFile.getName(), 
-            id: savedFile.getId(), 
-            type: 'docx'
-          };
-        } else {
-          Logger.log(`Error exporting Google Doc ${fileId}: ${response.getContentText()}`);
-        }
-      } else {
-        const copied = file.makeCopy(folder);
-        return { name: copied.getName(), id: copied.getId(), type: mimeType };
-      }
-    } else if (mat.link) {
-      return { url: mat.link.url, title: mat.link.title, type: 'link' };
-    } else if (mat.youtubeVideo) {
-      return { url: mat.youtubeVideo.alternateLink, title: mat.youtubeVideo.title, type: 'youtube' };
-    } else if (mat.form) {
-      return { url: mat.form.formUrl, title: mat.form.title, type: 'form' };
-    }
-  } catch (e) {
-    Logger.log(`Error saving material: ${e}`);
-  }
-  return null;
+    return null;
+  }).filter(Boolean);
 }
