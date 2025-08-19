@@ -26,6 +26,8 @@ In Apps Script: Services > + Add a service > Google Classroom
 
 In Apps Script: Resources > Cloud Platform Project > View API Console, then enable Google Drive API
 
+> Make sure you select Drive Api **V2**
+
 ## 📂 Folder Structure Example
 The Drive folder (by ID) should look like this:
 
@@ -66,9 +68,11 @@ where:
 
 5. Enable the required APIs (see above).
 
-6. Run importClassroomData from the Apps Script editor.
+6. Grant Access to make the script work.
 
-7. You will be prompted to authorize access the first time.
+7. Run importClassroomData from the Apps Script editor.
+
+8. You will be prompted to authorize access the first time.
 
 ## 📄 Data File Format (Example JSON)
 
