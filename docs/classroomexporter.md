@@ -25,7 +25,7 @@ Includes users, topics, materials, coursework, announcements, and student submis
 ## ⚙️ Requirements
 
 - Google account with access to the course  
-- Classroom API and Drive API enabled  
+- Classroom API and Drive API v2 enabled  
 - Permissions to read Classroom data and write to Drive
 
 ---
@@ -42,7 +42,7 @@ const COURSE_ID = 'YOUR_CLASSROOM_COURSE_ID';
 > to get the drive folder id, you just copy the string after the /folder/
 > (e.g. https://drive.google.com/drive/u/0/folders/STRINGTHATYOUNEED)
 
-> you can get the course id from [this](github.com/gablilli/googlescripts/classroom) script.
+> you can get the course id from [this](https://github.com/gablilli/googlescripts/classroom/courses-ids.gs) script.
 
 ### 2. Add APIs
 In order to correctly use the script, you need to add, in the services tab, **Drive API** and **Classroom API**.
@@ -61,17 +61,17 @@ All data will be exported into a folder named after the course inside your targe
 
 ## 📁 File Structure
 
-    users.json – user ID → full name mapping
+- users.json – user ID → full name mapping
 
-    topics.json – course topics
+- topics.json – course topics
 
-    materials.json – materials info + attachments
+- materials.json – materials info + attachments
 
-    coursework.json – assignments info + attachments
+- coursework.json – assignments info + attachments
 
-    announcements.json – announcements + attachments + comments
+- announcements.json – announcements + attachments + comments
 
-    submissions.json – student submissions + attachments + private comments
+- submissions.json – student submissions + attachments + private comments
 
 ### Folders:
 
