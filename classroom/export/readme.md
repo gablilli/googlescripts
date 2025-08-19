@@ -38,6 +38,11 @@ const EXPORT_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID';
 const COURSE_ID = 'YOUR_CLASSROOM_COURSE_ID';
 ```
 
+> to get the drive folder id, you just copy the string after the /folder/
+> (e.g. https://drive.google.com/drive/u/0/folders/STRINGTHATYOUNEED)
+
+> you can get the course id from [this](github.com/gablilli/googlescripts/classroom) script.
+
 ### 2. Add APIs
 In order to correctly use the script, you need to add, in the services tab, **Drive API** and **Classroom API**.
 
