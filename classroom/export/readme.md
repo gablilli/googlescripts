@@ -13,7 +13,7 @@ Includes users, topics, materials, coursework, announcements, and student submis
 - 👥 **Users** (`users.json`): list of students and teachers (ID → full name)  
 - 🗂 **Topics** (`topics.json`) of the course  
 - 📄 **Materials** (`materials.json` + `materials_files` folder)  
-- 📝 **Coursework** (`coursework.json` + `_files` folder)  
+- 📝 **Coursework** (`coursework.json` + `coursework_files` folder)  
 - 📢 **Announcements** (`announcements.json` + `announcements_files` folder) including comments  
 - 🏫 **Submissions** (`submissions.json` + `submissions_files` folder) including private comments  
 - 🗃 Exports Google Docs, Sheets, and Slides to `.docx`, `.xlsx`, `.pptx`  
