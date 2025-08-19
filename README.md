@@ -5,23 +5,24 @@ A collection of scripts for interacting with Google APIs. These scripts are desi
 ## 📜 Scripts Overview
 ### 🏫 Classroom Exporter
 
-Location: /export/classroom-exporter.gs
-Exports data from Google Classroom.
-Documentation: classroomexporter.md
+📍 [Location](/classroom/export/classroom-exporter.gs)
 
-➡️ Be sure to check the documentation for usage and authentication requirements.
+Exports data from Google Classroom.
+
+➡️ Be sure to check the [documentation](/docs/classroom-exporter.md) for usage and authentication requirements.
 
 ### 📥 Classroom Importer
 
-Location: /classroom/import/classroom-importer.gs
-Imports data into Google Classroom.
-Documentation: classroomimporter.md
+📍 [Location](/classroom/import/classroom-importer.gs)
 
-➡️ Detailed setup instructions are provided in the documentation.
+Imports data into Google Classroom.
+
+➡️ Detailed setup instructions are provided in the [documentation](/docs/classroom-importer.md).
 
 ### 🆔 Classroom IDs
 
-Location: /classroom/classroom-ids.gs
+📍 [Location](/classroom/courses-ids.gs)
+
 Identifies the Classroom courses you are enrolled in.
 
 ➡️ Helps you retrieve course IDs for further operations.
