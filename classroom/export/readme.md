@@ -16,6 +16,7 @@ Includes users, topics, materials, coursework, announcements, and student submis
 - 📝 **Coursework** (`coursework.json` + `coursework_files` folder)  
 - 📢 **Announcements** (`announcements.json` + `announcements_files` folder) including comments  
 - 🏫 **Submissions** (`submissions.json` + `submissions_files` folder) including private comments  
+      > Only if you are teacher
 - 🗃 Exports Google Docs, Sheets, and Slides to `.docx`, `.xlsx`, `.pptx`  
 - 🔗 Saves links, YouTube videos, and Google Forms as reference objects
 
