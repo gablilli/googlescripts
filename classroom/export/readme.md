@@ -69,21 +69,21 @@ All data will be exported into a folder named after the course inside your targe
 
 ### Folders:
 
-    coursework_files – coursework attachments
+- coursework_files – coursework attachments
 
-    materials_files – materials attachments
+- materials_files – materials attachments
 
-    announcements_files – announcement attachments
+- announcements_files – announcement attachments
 
-    submissions_files – student submission attachments
+- submissions_files – student submission attachments
 
 ## 📝 Notes
 
-    Google file attachments are exported to Office-compatible formats
+- Google file attachments are exported to Office-compatible formats
 
-    Links, YouTube videos, and Forms are exported as reference objects
+- Links, YouTube videos, and Forms are exported as reference objects
 
-    Errors during export are logged via Logger.log() without stopping the script ⚠️
+- Errors during export are logged via Logger.log() without stopping the script ⚠️
 
 ## ✅ Logging
 
