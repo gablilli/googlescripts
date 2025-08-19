@@ -1,5 +1,5 @@
-const EXPORT_FOLDER_ID = 'FOLDERID'; <--- CHANGE THIS
-const COURSE_ID = 'COURSEID'; <--- CHANGE THIS
+const EXPORT_FOLDER_ID = 'FOLDERID'; <-- CHANGE THIS
+const COURSE_ID = 'COURSEID'; <-- CHANGE THIS
 
 function exportClassroomData() {
   const exportRoot = DriveApp.getFolderById(EXPORT_FOLDER_ID);
@@ -22,7 +22,7 @@ function exportClassroomData() {
   exportAnnouncements(courseFolder, usersMap);
   exportSubmissions(courseFolder, usersMap);
 
-  Logger.log("✅ Esportazione completata in cartella: " + courseFolderName);
+  Logger.log("✅ Export completed in folder: " + courseFolderName);
 }
 
 // ---------------- USERS MAP ----------------
@@ -53,10 +53,10 @@ function exportMaterials(folder, usersMap) {
     title: m.title,
     description: m.description,
     authorUserId: m.creatorUserId,
-    author: usersMap[m.creatorUserId] || '[autore sconosciuto]',
+    author: usersMap[m.creatorUserId] || '[unknown author]',
     topicId: m.topicId,
-    creationTime: m.creationTime || null,  // aggiunto
-    updateTime: m.updateTime || null,      // aggiunto
+    creationTime: m.creationTime || null,
+    updateTime: m.updateTime || null,
     materials: exportAttachments(m.materials, materialsFolder)
   }));
 
@@ -73,7 +73,7 @@ function exportCoursework(folder, usersMap) {
     title: cw.title,
     description: cw.description,
     creatorUserId: cw.creatorUserId,
-    creatorName: usersMap[cw.creatorUserId] || '[autore sconosciuto]',
+    creatorName: usersMap[cw.creatorUserId] || '[unknown author]',
     topicId: cw.topicId,
     workType: cw.workType,
     assigneeMode: cw.assigneeMode,
@@ -99,9 +99,9 @@ function exportAnnouncements(folder, usersMap) {
     date: a.updateTime || a.creationTime,
     text: a.text,
     authorUserId: a.creatorUserId,
-    author: usersMap[a.creatorUserId] || '[autore sconosciuto]',
+    author: usersMap[a.creatorUserId] || '[unknown author]',
     materials: exportAttachments(a.materials, announcementsFolder),
-    comments: exportAnnouncementComments(a.id)
+    comments: exportAnnouncementComments(a.id, usersMap)
   }));
 
   folder.createFile('announcements.json', JSON.stringify(exported, null, 2), MimeType.PLAIN_TEXT);
@@ -113,11 +113,11 @@ function exportAnnouncementComments(announcementId, usersMap) {
     return comments.map(c => ({
       date: c.updateTime || c.creationTime,
       authorId: c.creatorUserId || null,
-      author: usersMap[c.creatorUserId] || '[autore sconosciuto]',
+      author: usersMap[c.creatorUserId] || '[unknown author]',
       text: c.text
     }));
   } catch (e) {
-    Logger.log(`⚠️ Impossibile esportare commenti per annuncio ${announcementId}: ${e.message}`);
+    Logger.log(`⚠️ Unable to export comments for announcement ${announcementId}: ${e.message}`);
     return [];
   }
 }
@@ -140,12 +140,12 @@ function exportSubmissions(folder, usersMap) {
           const entry = {
             id: sub.id,
             userId: sub.userId,
-            userName: usersMap[sub.userId] || '[studente sconosciuto]',
+            userName: usersMap[sub.userId] || '[unknown student]',
             state: sub.state,
             assignedGrade: sub.assignedGrade || null,
             draftGrade: sub.draftGrade || null,
-            creationTime: sub.creationTime || null, // aggiunto
-            updateTime: sub.updateTime || null,     // aggiunto
+            creationTime: sub.creationTime || null,
+            updateTime: sub.updateTime || null,
             materials: [],
             privateComments: exportPrivateComments(cw.id, sub.id, usersMap)
           };
@@ -196,20 +196,20 @@ function exportSubmissions(folder, usersMap) {
                     return null;
                   }
                 } catch (e) {
-                  Logger.log(`⚠️ Allegato submission non esportato (${sub.id}): ${e.message}`);
+                  Logger.log(`⚠️ Submission attachment not exported (${sub.id}): ${e.message}`);
                   return null;
                 }
               }).filter(Boolean);
             }
           } catch (e) {
-            Logger.log(`⚠️ Impossibile esportare submission ${sub.id}: ${e.message}`);
+            Logger.log(`⚠️ Unable to export submission ${sub.id}: ${e.message}`);
           }
 
           return entry;
         })
       };
     } catch (e) {
-      Logger.log(`⚠️ Impossibile esportare submissions per compito ${cw.id}: ${e.message}`);
+      Logger.log(`⚠️ Unable to export submissions for coursework ${cw.id}: ${e.message}`);
     }
   });
 
@@ -224,11 +224,11 @@ function exportPrivateComments(courseWorkId, submissionId, usersMap) {
 
     return comments.map(c => ({
       date: c.updateTime || c.creationTime,
-      author: usersMap[c.creatorUserId] || '[autore sconosciuto]',
+      author: usersMap[c.creatorUserId] || '[unknown author]',
       text: c.text
     }));
   } catch (e) {
-    Logger.log(`⚠️ Commenti privati non accessibili per submission ${submissionId}`);
+    Logger.log(`⚠️ Private comments not accessible for submission ${submissionId}`);
     return [];
   }
 }
@@ -242,7 +242,7 @@ function exportGoogleFileAs(fileId, mimeType, name, targetFolder) {
   });
 
   if (response.getResponseCode() !== 200) {
-    throw new Error(`Export fallito: ${response.getContentText()}`);
+    throw new Error(`Export failed: ${response.getContentText()}`);
   }
 
   const blob = response.getBlob().setName(name);
@@ -295,7 +295,7 @@ function exportAttachments(materials, targetFolder) {
         return { type: 'form', url: mat.form.formUrl, title: mat.form.title || '' };
       }
     } catch (e) {
-      Logger.log(`⚠️ Allegato non esportato: ${e.message}`);
+      Logger.log(`⚠️ Attachment not exported: ${e.message}`);
     }
     return null;
   }).filter(Boolean);
