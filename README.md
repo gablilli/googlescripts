@@ -45,6 +45,7 @@ Saves the edit history of a Google Doc.
 ### ✉️ Export Gmail Inbox Emails
 
 📍 [Location](/mail/exportinboxemails.gs)
+
 Exports emails from your Gmail inbox.
 
 ## ⚙️ Setup and Usage
