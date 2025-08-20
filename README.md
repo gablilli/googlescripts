@@ -29,26 +29,23 @@ Identifies the Classroom courses you are enrolled in.
 
 ### 📂 Copy Folder
 
-Location: /drive/copyfolder.gs
+📍 [Location](/drive/copy-folder.gs)
+
 Copies a folder within Google Drive.
 
 ➡️ Useful for duplicating folder structures and contents.
 
 ### 📝 Save Google Docs Edit History
 
-Location: /gdocs/save-edithistory.gs
-Saves the edit history of a Google Doc.
-Documentation: save-edithistory.md
+📍 [Location](/gdocs/save-edithistory.gs)
 
-➡️ The documentation explains how to track changes and revisions.
+Saves the edit history of a Google Doc.
+
 
 ### ✉️ Export Gmail Inbox Emails
 
-Location: /gmail/exportinboxemails.gs
+📍 [Location](/mail/exportinboxemails.gs)
 Exports emails from your Gmail inbox.
-Documentation: exportinboxemails.md
-
-➡️ Includes instructions for setting up the script and extracting email data.
 
 ## ⚙️ Setup and Usage
 
