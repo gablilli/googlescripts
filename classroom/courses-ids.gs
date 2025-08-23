@@ -1,3 +1,4 @@
+// To use the script, add Google Classroom Api in the services tab
 function listClassroomCourseIds() {
   const optionalArgs = {
     pageSize: 50,
