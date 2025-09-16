@@ -15,6 +15,9 @@ This Google Apps Script automates the import of:
 
 ...into a specific Google Classroom course, using JSON metadata and associated files stored in a Google Drive folder.
 
+## Disclaimer
+Obviously, you’ll need to run the script from a different account — like a @gmail.com “fake teacher” account. Just invite your personal account (the one you actually want to access the Classroom with), and you’re good to go.
+
 ## 🧩 Required Google APIs
 Before running the script, enable these services:
 
