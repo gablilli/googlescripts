@@ -18,6 +18,11 @@ This Google Apps Script automates the import of:
 ## Disclaimer
 Obviously, you’ll need to run the script from a different account — like a @gmail.com “fake teacher” account. Just invite your personal account (the one you actually want to access the Classroom with), and you’re good to go.
 
+You also need to copy the folder exported with the [export](../classroom/export/classroom-exporter.gs) script. In order to do this, use the [copy folder](../drive/copyfolder.gs) script.
+
+## Requirements
+
+
 ## 🧩 Required Google APIs
 Before running the script, enable these services:
 
