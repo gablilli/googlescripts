@@ -52,7 +52,7 @@ Exports emails from your Gmail inbox.
 
 1. Clone the repository to your local machine or workspace.
 
-2. Each script has its own documentation file under the /docs folder.
+2. Some scripts have their own documentation file under the /docs folder.
 
 > Make sure to read the documentation for proper setup, authentication, and usage instructions.
 
