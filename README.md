@@ -29,7 +29,7 @@ Identifies the Classroom courses you are enrolled in.
 
 ### 📂 Copy Folder
 
-📍 [Location](/drive/copy-folder.gs)
+📍 [Location](/drive/copyfolder.gs)
 
 Copies a folder within Google Drive.
 
