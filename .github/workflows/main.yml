@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: ✅ Run ESLint
-        run: npx eslint . --ext .js
+        run: npx eslint "**/*.{js,gs}"
 
       - name: 🎨 Run Prettier (Check Mode)
         run: npx prettier . --check
