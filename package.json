@@ -1,0 +1,2 @@
+npm init -y
+npm install --save-dev eslint prettier eslint-config-prettier
