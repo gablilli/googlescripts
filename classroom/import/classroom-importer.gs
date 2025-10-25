@@ -14,7 +14,7 @@ function importClassroomData() {
   const announcements = readJsonFile(courseFolder, 'announcements.json');
   const submissions = readJsonFile(courseFolder, 'submissions.json');
 
-  // --- create aarguments ---
+  // --- create arguments ---
   const topicIdMap = {};
   topics.forEach(t => {
     const created = Classroom.Courses.Topics.create({ name: t.name }, COURSE_ID);
@@ -24,7 +24,7 @@ function importClassroomData() {
   // topic for orphan sumbissions
   const submissionTopic = Classroom.Courses.Topics.create({ name: "Submissions" }, COURSE_ID);
 
-  // --- importa materials ---
+  // --- import materials ---
   const materialsFolder = findSubfolder(courseFolder, 'materials_files');
   if (materialsFolder) {
     importMaterials(COURSE_ID, materials, materialsFolder, topicIdMap);
