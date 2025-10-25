@@ -6,7 +6,7 @@ function importClassroomData() {
   const courseName = courseFolder.getName();
   Logger.log("Import nel corso: " + courseName + " (" + COURSE_ID + ")");
 
-  // --- carica i JSON ---
+  // --- load jsons ---
   const usersMap = readJsonFile(courseFolder, 'users.json');
   const topics = readJsonFile(courseFolder, 'topics.json');
   const materials = readJsonFile(courseFolder, 'materials.json');
@@ -14,41 +14,41 @@ function importClassroomData() {
   const announcements = readJsonFile(courseFolder, 'announcements.json');
   const submissions = readJsonFile(courseFolder, 'submissions.json');
 
-  // --- crea argomenti ---
+  // --- create aarguments ---
   const topicIdMap = {};
   topics.forEach(t => {
     const created = Classroom.Courses.Topics.create({ name: t.name }, COURSE_ID);
     topicIdMap[t.topicId || t.id] = created.topicId;
   });
 
-  // topic extra per submissions orfane
+  // topic for orphan sumbissions
   const submissionTopic = Classroom.Courses.Topics.create({ name: "Submissions" }, COURSE_ID);
 
-  // --- importa materiali ---
+  // --- importa materials ---
   const materialsFolder = findSubfolder(courseFolder, 'materials_files');
   if (materialsFolder) {
     importMaterials(COURSE_ID, materials, materialsFolder, topicIdMap);
   }
 
-  // --- importa coursework ---
+  // --- import coursework ---
   const courseworkFolder = findSubfolder(courseFolder, 'coursework_files');
   if (courseworkFolder) {
     importCoursework(COURSE_ID, coursework, courseworkFolder, topicIdMap);
   }
 
-  // --- importa annunci ---
+  // --- import annuncements ---
   const announcementsFolder = findSubfolder(courseFolder, 'announcements_files');
   if (announcementsFolder) {
     importAnnouncements(COURSE_ID, announcements, announcementsFolder, topicIdMap);
   }
 
-  // --- importa submissions ---
+  // --- import submissions ---
   const submissionsFolder = findSubfolder(courseFolder, 'submissions_files');
   if (submissionsFolder) {
     importSubmissions(COURSE_ID, submissions, submissionsFolder, topicIdMap, submissionTopic.topicId);
   }
 
-  Logger.log("✅ Importazione completata nel corso: " + courseName);
+  Logger.log("✅ Importation complete in: " + courseName);
 }
 
 // --------- UTILS ----------
@@ -84,7 +84,7 @@ function findSubfolder(parentFolder, nameFragment) {
   return null;
 }
 
-// --- IMPORT FUNZIONI CON ORDINAMENTO ---
+// --- import with order ---
 function importMaterials(courseId, mats, filesFolder, topicIdMap) {
   // Usa creationTime o createTime se presente
   mats.sort((a, b) => new Date(a.creationTime || a.createTime) - new Date(b.creationTime || b.createTime));
