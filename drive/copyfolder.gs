@@ -14,7 +14,7 @@ function copyFolderContents(source, target) {
     try {
       const copiedFile = file.makeCopy(file.getName(), target);
     } catch (e) {
-      Logger.log('Errore con file: ' + file.getName() + ' → ' + e.message);
+      Logger.log('Error with file: ' + file.getName() + ' → ' + e.message);
     }
   }
   

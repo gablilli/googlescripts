@@ -4,7 +4,7 @@ const COURSE_ID = 'COURSEID'; <-- CHANGE HERE
 function importClassroomData() {
   const courseFolder = DriveApp.getFolderById(IMPORT_ROOT_ID);
   const courseName = courseFolder.getName();
-  Logger.log("Import nel corso: " + courseName + " (" + COURSE_ID + ")");
+  Logger.log("Import in course: " + courseName + " (" + COURSE_ID + ")");
 
   // --- load jsons ---
   const usersMap = readJsonFile(courseFolder, 'users.json');
