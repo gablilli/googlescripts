@@ -1,7 +1,7 @@
 function exportReceivedInboxOnlyBlock0() {
   const folderName = "YOURFOLDERNAME";
-  const start = 0; <--- put here from where should the script start
-  const count = 100; <--- put here how many email do you want (note: do **not** go over 500, otherwise you'll get a 429)
+  const start = 0; // <--- put here from where should the script start
+  const count = 100; // <--- put here how many email do you want (note: do **not** go over 500, otherwise you'll get a 429)
 
   const threads = GmailApp.getInboxThreads(start, count);
 
